@@ -1,18 +1,3 @@
-"""
-Skin Cancer Classification - Image Predictor
-============================================
-Uses the trained skin_cancer_model.pth to classify skin images as:
-- Malignant
-- Benign  
-- Normal
-
-Usage:
-    python skin_cancer_predictor.py <image_path>
-    
-Example:
-    python skin_cancer_predictor.py test_image.jpg
-"""
-
 import sys
 import torch
 import torch.nn as nn
@@ -20,10 +5,8 @@ from torchvision import transforms
 from PIL import Image
 import timm
 
-
 # Class names
 CLASS_NAMES = ['Malignant', 'Benign', 'Normal']
-
 
 class SkinCancerClassifier(nn.Module):
     """Skin Cancer Classifier using pretrained EfficientNet-B0."""
@@ -113,12 +96,14 @@ def predict(image_path, model, device, img_size, mean, std):
     
     return predicted_class, confidence_score, all_probs
 
-
 def main():
     print("\n" + "="*50)
-    print("🔬 SKIN CANCER CLASSIFICATION")
+    print("🔬 SKIN CANCER DETECTION")
     print("="*50)
-    print("Type 'quit' to exit the program.\n")
+    print("Commands:")
+    print("  - Enter image path to analyze")
+    print("  - Type 'details' after a prediction for more info")
+    print("  - Type 'quit' to exit\n")
     
     model_path = "skin_cancer_model.pth"
     
@@ -136,18 +121,63 @@ def main():
     # Load model once
     model, img_size, mean, std = load_model(model_path, device)
     
+    # Store last prediction for details command
+    last_prediction = None
+    last_image_path = None
+    
     # Main loop
     while True:
-        # Ask user for image path
-        image_path = input("\n📁 Enter image path (or 'quit' to exit): ").strip()
+        # Ask user for input
+        user_input = input("\n📁 Enter image path (or 'quit'/'details'): ").strip()
         
         # Remove quotes if user included them
-        image_path = image_path.strip('"').strip("'")
+        user_input = user_input.strip('"').strip("'")
         
         # Check for quit command
-        if image_path.lower() == 'quit':
-            print("\n� Goodbye!")
+        if user_input.lower() == 'quit':
+            print("\n 7amdellah 3l Salama")
             break
+        
+        # Check for details command
+        if user_input.lower() == 'details':
+            if last_prediction is None:
+                print("❌ No prediction available. Please analyze an image first.")
+                continue
+            
+            predicted_class, confidence, all_probs = last_prediction
+            
+            # Show detailed results
+            print("\n" + "="*50)
+            print("📊 DETAILED RESULTS")
+            print("="*50)
+            
+            # Show actual classification (Benign or Malignant)
+            if predicted_class != "Normal":
+                print(f"\n🔍 Classification: {predicted_class}")
+            else:
+                print(f"\n🔍 Classification: Normal Skin (No lesion detected)")
+            
+            print(f"📈 Confidence: {confidence*100:.2f}%")
+            
+            print("\n📉 All Class Probabilities:")
+            print("-"*30)
+            for class_name, prob in all_probs.items():
+                bar = "█" * int(prob * 20)
+                print(f"   {class_name:10} {prob*100:6.2f}% {bar}")
+            print("-"*30)
+            
+            # Warning for malignant detection
+            if predicted_class == "Malignant" and confidence > 0.5:
+                print("\n⚠️  WARNING: Potential malignant lesion detected!")
+                print("   Please consult a dermatologist for proper diagnosis.")
+            
+            # Warning if malignant probability > 10% but predicted as benign/normal
+            elif all_probs["Malignant"] > 0.10:
+                print(f"\n⚠️  NOTE: There's a {all_probs['Malignant']*100:.1f}% probability of Malignancy.")
+                print("   Consider consulting a dermatologist for confirmation.")
+            continue
+        
+        image_path = user_input
         
         if not image_path:
             print("❌ Error: No image path provided!")
@@ -165,34 +195,36 @@ def main():
                 image_path, model, device, img_size, mean, std
             )
             
-            # Display results
+            # Store prediction for details command
+            last_prediction = (predicted_class, confidence, all_probs)
+            last_image_path = image_path
+            
+            # Determine status: Safe (Normal) or Suspicious (Benign/Malignant)
+            if predicted_class == "Normal":
+                status = "✅ SAFE"
+                status_color = "Safe - Normal skin detected"
+            else:
+                status = "⚠️  SUSPICIOUS"
+                status_color = "Suspicious - Lesion detected, further examination recommended"
+            
+            # Display the image
+            try:
+                img = Image.open(image_path)
+                img.show()
+            except Exception as img_error:
+                print(f"(Could not display image: {img_error})")
+            
+            # Display simple results
             print("\n" + "="*50)
-            print("📊 PREDICTION RESULTS")
+            print("📊 RESULT")
             print("="*50)
-            print(f"\n🎯 Predicted Class: {predicted_class}")
-            print(f"📈 Confidence: {confidence*100:.2f}%")
-            print("\n📉 All Class Probabilities:")
-            print("-"*30)
-            for class_name, prob in all_probs.items():
-                bar = "█" * int(prob * 20)
-                print(f"   {class_name:10} {prob*100:6.2f}% {bar}")
-            print("-"*30)
-            
-            # Warning for malignant detection
-            if predicted_class == "Malignant" and confidence > 0.5:
-                print("\n⚠️  WARNING: Potential malignant lesion detected!")
-                print("   Please consult a dermatologist for proper diagnosis.")
-            
-            # Warning if malignant probability > 10% but predicted as benign/normal
-            elif all_probs["Malignant"] > 0.10:
-                print(f"\n⚠️  NOTE: Appears to be {predicted_class}, but there's a possibility")
-                print(f"   to be Malignant ({all_probs['Malignant']*100:.1f}% probability).")
-                print("   Consider consulting a dermatologist for confirmation.")
+            print(f"\n🎯 Status: {status}")
+            print(f"   {status_color}")
+            print("\n💡 Type 'details' for more information about the diagnosis.")
         
         except Exception as e:
             print(f"❌ Error processing image: {str(e)}")
             continue
-
 
 if __name__ == "__main__":
     main()
