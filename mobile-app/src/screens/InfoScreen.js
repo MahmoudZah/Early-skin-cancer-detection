@@ -1,56 +1,62 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
-import { theme } from '../styles/theme';
+import { Ionicons } from '@expo/vector-icons';
+import { useTheme } from '../context/ThemeContext';
 import Card from '../components/Card';
 import Disclaimer from '../components/Disclaimer';
 
 export default function InfoScreen() {
+    const { theme, isDark } = useTheme();
+
     return (
-        <ScrollView style={styles.container}>
+        <ScrollView style={[styles.container, { backgroundColor: theme.colors.background }]}>
             <View style={styles.content}>
                 {/* Header */}
                 <View style={styles.header}>
-                    <Text style={styles.emoji}>ℹ️</Text>
-                    <Text style={styles.title}>How It Works</Text>
+                    <Ionicons name="information-circle" size={64} color={theme.colors.primary} />
+                    <Text style={[styles.title, { color: theme.colors.text }]}>How It Works</Text>
                 </View>
 
                 {/* About Section */}
                 <Card>
-                    <Text style={styles.sectionTitle}>About This App</Text>
-                    <Text style={styles.text}>
+                    <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>About This App</Text>
+                    <Text style={[styles.text, { color: theme.colors.text }]}>
                         This application uses artificial intelligence to analyze skin lesion images
                         and provide early detection assistance for potential skin cancer. The AI model
                         has been trained on thousands of dermatological images to classify lesions as:
                     </Text>
                     <View style={styles.classificationList}>
-                        <Text style={styles.listItem}>• <Text style={styles.bold}>Malignant</Text> - Potentially cancerous</Text>
-                        <Text style={styles.listItem}>• <Text style={styles.bold}>Benign</Text> - Non-cancerous</Text>
-                        <Text style={styles.listItem}>• <Text style={styles.bold}>Normal</Text> - Healthy skin</Text>
+                        <Text style={[styles.listItem, { color: theme.colors.text }]}>• <Text style={styles.bold}>Malignant</Text> - Potentially cancerous</Text>
+                        <Text style={[styles.listItem, { color: theme.colors.text }]}>• <Text style={styles.bold}>Benign</Text> - Non-cancerous</Text>
+                        <Text style={[styles.listItem, { color: theme.colors.text }]}>• <Text style={styles.bold}>Normal</Text> - Healthy skin</Text>
                     </View>
                 </Card>
 
                 {/* How to Use */}
                 <Card>
-                    <Text style={styles.sectionTitle}>📸 How to Use</Text>
+                    <View style={styles.sectionHeader}>
+                        <Ionicons name="camera" size={24} color={theme.colors.primary} />
+                        <Text style={[styles.sectionTitle, { color: theme.colors.text }]}> How to Use</Text>
+                    </View>
                     <View style={styles.stepsList}>
-                        <Text style={styles.step}>
-                            <Text style={styles.stepNumber}>1. </Text>
+                        <Text style={[styles.step, { color: theme.colors.text }]}>
+                            <Text style={[styles.stepNumber, { color: theme.colors.primary }]}>1. </Text>
                             Capture or upload a clear image of the skin lesion
                         </Text>
-                        <Text style={styles.step}>
-                            <Text style={styles.stepNumber}>2. </Text>
+                        <Text style={[styles.step, { color: theme.colors.text }]}>
+                            <Text style={[styles.stepNumber, { color: theme.colors.primary }]}>2. </Text>
                             Review the image for clarity and quality
                         </Text>
-                        <Text style={styles.step}>
-                            <Text style={styles.stepNumber}>3. </Text>
+                        <Text style={[styles.step, { color: theme.colors.text }]}>
+                            <Text style={[styles.stepNumber, { color: theme.colors.primary }]}>3. </Text>
                             Run the AI analysis
                         </Text>
-                        <Text style={styles.step}>
-                            <Text style={styles.stepNumber}>4. </Text>
+                        <Text style={[styles.step, { color: theme.colors.text }]}>
+                            <Text style={[styles.stepNumber, { color: theme.colors.primary }]}>4. </Text>
                             Review the results and confidence score
                         </Text>
-                        <Text style={styles.step}>
-                            <Text style={styles.stepNumber}>5. </Text>
+                        <Text style={[styles.step, { color: theme.colors.text }]}>
+                            <Text style={[styles.stepNumber, { color: theme.colors.primary }]}>5. </Text>
                             Consult a dermatologist if recommended
                         </Text>
                     </View>
@@ -58,63 +64,75 @@ export default function InfoScreen() {
 
                 {/* Tips for Best Results */}
                 <Card>
-                    <Text style={styles.sectionTitle}>💡 Tips for Clear Images</Text>
+                    <View style={styles.sectionHeader}>
+                        <Ionicons name="bulb" size={24} color={theme.colors.warning} />
+                        <Text style={[styles.sectionTitle, { color: theme.colors.text }]}> Tips for Clear Images</Text>
+                    </View>
                     <View style={styles.tipsList}>
-                        <Text style={styles.tip}>
+                        <Text style={[styles.tip, { color: theme.colors.text }]}>
                             <Text style={styles.bold}>Good Lighting:</Text> Use natural daylight or bright indoor lighting
                         </Text>
-                        <Text style={styles.tip}>
+                        <Text style={[styles.tip, { color: theme.colors.text }]}>
                             <Text style={styles.bold}>Steady Camera:</Text> Hold your device steady to avoid blurry images
                         </Text>
-                        <Text style={styles.tip}>
+                        <Text style={[styles.tip, { color: theme.colors.text }]}>
                             <Text style={styles.bold}>Close-Up:</Text> Fill the frame with the lesion, but don't get too close
                         </Text>
-                        <Text style={styles.tip}>
+                        <Text style={[styles.tip, { color: theme.colors.text }]}>
                             <Text style={styles.bold}>No Flash:</Text> Avoid using flash as it can create glare
                         </Text>
-                        <Text style={styles.tip}>
+                        <Text style={[styles.tip, { color: theme.colors.text }]}>
                             <Text style={styles.bold}>Clean Lens:</Text> Make sure your camera lens is clean
                         </Text>
-                        <Text style={styles.tip}>
+                        <Text style={[styles.tip, { color: theme.colors.text }]}>
                             <Text style={styles.bold}>Focus:</Text> Tap on the lesion to ensure it's in focus
                         </Text>
                     </View>
                 </Card>
 
                 {/* When to See a Doctor */}
-                <Card style={styles.warningCard}>
-                    <Text style={styles.warningTitle}>🏥 When to See a Doctor</Text>
-                    <Text style={styles.text}>
+                <Card style={[styles.warningCard, {
+                    backgroundColor: isDark ? '#3D2222' : '#FFF0F0',
+                    borderLeftColor: theme.colors.danger,
+                }]}>
+                    <View style={styles.warningHeader}>
+                        <Ionicons name="medkit" size={24} color={theme.colors.danger} />
+                        <Text style={[styles.warningTitle, { color: theme.colors.danger }]}> When to See a Doctor</Text>
+                    </View>
+                    <Text style={[styles.text, { color: theme.colors.text }]}>
                         Consult a dermatologist immediately if you notice:
                     </Text>
                     <View style={styles.warningList}>
-                        <Text style={styles.warningItem}>• New moles or growths</Text>
-                        <Text style={styles.warningItem}>• Changes in existing moles (size, color, shape)</Text>
-                        <Text style={styles.warningItem}>• Asymmetrical moles</Text>
-                        <Text style={styles.warningItem}>• Irregular or jagged borders</Text>
-                        <Text style={styles.warningItem}>• Multiple colors in one mole</Text>
-                        <Text style={styles.warningItem}>• Diameter larger than 6mm (pencil eraser)</Text>
-                        <Text style={styles.warningItem}>• Itching, bleeding, or crusting</Text>
+                        <Text style={[styles.warningItem, { color: theme.colors.text }]}>• New moles or growths</Text>
+                        <Text style={[styles.warningItem, { color: theme.colors.text }]}>• Changes in existing moles (size, color, shape)</Text>
+                        <Text style={[styles.warningItem, { color: theme.colors.text }]}>• Asymmetrical moles</Text>
+                        <Text style={[styles.warningItem, { color: theme.colors.text }]}>• Irregular or jagged borders</Text>
+                        <Text style={[styles.warningItem, { color: theme.colors.text }]}>• Multiple colors in one mole</Text>
+                        <Text style={[styles.warningItem, { color: theme.colors.text }]}>• Diameter larger than 6mm (pencil eraser)</Text>
+                        <Text style={[styles.warningItem, { color: theme.colors.text }]}>• Itching, bleeding, or crusting</Text>
                     </View>
                 </Card>
 
                 {/* ABCDE Rule */}
                 <Card>
-                    <Text style={styles.sectionTitle}>📝 ABCDE Rule for Melanoma</Text>
+                    <View style={styles.sectionHeader}>
+                        <Ionicons name="document-text" size={24} color={theme.colors.primary} />
+                        <Text style={[styles.sectionTitle, { color: theme.colors.text }]}> ABCDE Rule for Melanoma</Text>
+                    </View>
                     <View style={styles.abcdeList}>
-                        <Text style={styles.abcdeItem}>
+                        <Text style={[styles.abcdeItem, { color: theme.colors.text }]}>
                             <Text style={styles.bold}>A - Asymmetry:</Text> One half doesn't match the other
                         </Text>
-                        <Text style={styles.abcdeItem}>
+                        <Text style={[styles.abcdeItem, { color: theme.colors.text }]}>
                             <Text style={styles.bold}>B - Border:</Text> Irregular, scalloped, or poorly defined edges
                         </Text>
-                        <Text style={styles.abcdeItem}>
+                        <Text style={[styles.abcdeItem, { color: theme.colors.text }]}>
                             <Text style={styles.bold}>C - Color:</Text> Varies from one area to another
                         </Text>
-                        <Text style={styles.abcdeItem}>
+                        <Text style={[styles.abcdeItem, { color: theme.colors.text }]}>
                             <Text style={styles.bold}>D - Diameter:</Text> Larger than 6mm (though can be smaller)
                         </Text>
-                        <Text style={styles.abcdeItem}>
+                        <Text style={[styles.abcdeItem, { color: theme.colors.text }]}>
                             <Text style={styles.bold}>E - Evolving:</Text> Changing in size, shape, or color
                         </Text>
                     </View>
@@ -124,7 +142,7 @@ export default function InfoScreen() {
                 <Disclaimer />
 
                 {/* Footer */}
-                <Text style={styles.footer}>
+                <Text style={[styles.footer, { color: theme.colors.textSecondary }]}>
                     This app is for educational purposes only. Always consult healthcare professionals
                     for medical advice.
                 </Text>
@@ -136,101 +154,92 @@ export default function InfoScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: theme.colors.background,
     },
     content: {
-        padding: theme.spacing.lg,
-        gap: theme.spacing.md,
+        padding: 24,
+        gap: 16,
     },
     header: {
         alignItems: 'center',
-        marginBottom: theme.spacing.lg,
-    },
-    emoji: {
-        fontSize: 64,
-        marginBottom: theme.spacing.sm,
+        marginBottom: 24,
     },
     title: {
-        fontSize: theme.fontSize.xxl,
-        fontWeight: theme.fontWeight.bold,
-        color: theme.colors.text,
+        fontSize: 32,
+        fontWeight: '700',
+        marginTop: 8,
+    },
+    sectionHeader: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 16,
     },
     sectionTitle: {
-        fontSize: theme.fontSize.lg,
-        fontWeight: theme.fontWeight.bold,
-        color: theme.colors.text,
-        marginBottom: theme.spacing.md,
+        fontSize: 18,
+        fontWeight: '700',
     },
     text: {
-        fontSize: theme.fontSize.md,
-        color: theme.colors.text,
+        fontSize: 16,
         lineHeight: 22,
-        marginBottom: theme.spacing.sm,
+        marginBottom: 8,
     },
     bold: {
-        fontWeight: theme.fontWeight.bold,
+        fontWeight: '700',
     },
     classificationList: {
-        marginTop: theme.spacing.sm,
+        marginTop: 8,
     },
     listItem: {
-        fontSize: theme.fontSize.md,
-        color: theme.colors.text,
-        marginBottom: theme.spacing.xs,
+        fontSize: 16,
+        marginBottom: 4,
     },
     stepsList: {
-        gap: theme.spacing.sm,
+        gap: 8,
     },
     step: {
-        fontSize: theme.fontSize.md,
-        color: theme.colors.text,
+        fontSize: 16,
         lineHeight: 22,
     },
     stepNumber: {
-        fontWeight: theme.fontWeight.bold,
-        color: theme.colors.primary,
+        fontWeight: '700',
     },
     tipsList: {
-        gap: theme.spacing.md,
+        gap: 16,
     },
     tip: {
-        fontSize: theme.fontSize.md,
-        color: theme.colors.text,
+        fontSize: 16,
         lineHeight: 22,
     },
     warningCard: {
-        backgroundColor: '#FFF0F0',
         borderLeftWidth: 4,
-        borderLeftColor: theme.colors.danger,
+    },
+    warningHeader: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 16,
     },
     warningTitle: {
-        fontSize: theme.fontSize.lg,
-        fontWeight: theme.fontWeight.bold,
-        color: theme.colors.danger,
-        marginBottom: theme.spacing.md,
+        fontSize: 18,
+        fontWeight: '700',
     },
     warningList: {
-        marginTop: theme.spacing.sm,
+        marginTop: 8,
     },
     warningItem: {
-        fontSize: theme.fontSize.md,
-        color: theme.colors.text,
-        marginBottom: theme.spacing.xs,
+        fontSize: 16,
+        marginBottom: 4,
     },
     abcdeList: {
-        gap: theme.spacing.md,
+        gap: 16,
     },
     abcdeItem: {
-        fontSize: theme.fontSize.md,
-        color: theme.colors.text,
+        fontSize: 16,
         lineHeight: 22,
     },
     footer: {
-        fontSize: theme.fontSize.sm,
-        color: theme.colors.textSecondary,
+        fontSize: 14,
         textAlign: 'center',
         fontStyle: 'italic',
-        marginTop: theme.spacing.lg,
-        marginBottom: theme.spacing.xl,
+        marginTop: 24,
+        marginBottom: 32,
     },
 });

@@ -152,19 +152,19 @@ def predict():
 
 if __name__ == '__main__':
     print("="*50)
-    print("🔬 SKIN CANCER DETECTION API")
+    print("SKIN CANCER DETECTION API")
     print("="*50)
     
     # Load model on startup
     try:
         load_model()
     except Exception as e:
-        print(f"❌ Error loading model: {str(e)}")
+        print(f"ERROR: Error loading model: {str(e)}")
         print("Make sure 'skin_cancer_model.pth' is in the same directory.")
         exit(1)
     
     # Start Flask server
-    print("\n🚀 Starting API server...")
+    print("\nStarting API server...")
     print("API will be available at: http://localhost:5000")
     print("\nEndpoints:")
     print("  GET  /health  - Health check")

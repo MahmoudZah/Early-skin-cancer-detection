@@ -1,8 +1,9 @@
 import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StatusBar } from 'expo-status-bar';
-import { theme } from './src/styles/theme';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { ThemeProvider, useTheme } from './src/context/ThemeContext';
 
 // Screens
 import HomeScreen from './src/screens/HomeScreen';
@@ -15,10 +16,24 @@ import InfoScreen from './src/screens/InfoScreen';
 
 const Stack = createNativeStackNavigator();
 
-export default function App() {
+function AppNavigator() {
+    const { theme, isDark } = useTheme();
+
+    const navigationTheme = {
+        dark: isDark,
+        colors: {
+            primary: theme.colors.primary,
+            background: theme.colors.background,
+            card: theme.colors.surface,
+            text: theme.colors.text,
+            border: theme.colors.border,
+            notification: theme.colors.primary,
+        },
+    };
+
     return (
-        <NavigationContainer>
-            <StatusBar style="dark" />
+        <NavigationContainer theme={navigationTheme}>
+            <StatusBar style={isDark ? 'light' : 'dark'} />
             <Stack.Navigator
                 initialRouteName="Home"
                 screenOptions={{
@@ -77,7 +92,7 @@ export default function App() {
                     options={{
                         title: 'Analysis Results',
                         headerBackTitle: 'Back',
-                        headerLeft: () => null, // Prevent going back from results
+                        headerLeft: () => null,
                     }}
                 />
 
@@ -100,5 +115,15 @@ export default function App() {
                 />
             </Stack.Navigator>
         </NavigationContainer>
+    );
+}
+
+export default function App() {
+    return (
+        <SafeAreaProvider>
+            <ThemeProvider>
+                <AppNavigator />
+            </ThemeProvider>
+        </SafeAreaProvider>
     );
 }

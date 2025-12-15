@@ -1,6 +1,6 @@
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet, ActivityIndicator, View } from 'react-native';
-import { theme } from '../styles/theme';
+import { useTheme } from '../context/ThemeContext';
 
 export default function Button({
     title,
@@ -12,18 +12,117 @@ export default function Button({
     icon = null,
     style
 }) {
+    const { theme } = useTheme();
+
+    const getVariantStyle = () => {
+        switch (variant) {
+            case 'primary':
+                return {
+                    backgroundColor: theme.colors.primary,
+                    borderWidth: 0,
+                };
+            case 'secondary':
+                return {
+                    backgroundColor: theme.colors.surface,
+                    borderWidth: 1,
+                    borderColor: theme.colors.primary,
+                };
+            case 'danger':
+                return {
+                    backgroundColor: theme.colors.danger,
+                    borderWidth: 0,
+                };
+            case 'success':
+                return {
+                    backgroundColor: theme.colors.success,
+                    borderWidth: 0,
+                };
+            case 'outline':
+                return {
+                    backgroundColor: 'transparent',
+                    borderWidth: 1,
+                    borderColor: theme.colors.border,
+                };
+            default:
+                return {
+                    backgroundColor: theme.colors.primary,
+                    borderWidth: 0,
+                };
+        }
+    };
+
+    const getSizeStyle = () => {
+        switch (size) {
+            case 'small':
+                return {
+                    paddingHorizontal: theme.spacing.md,
+                    paddingVertical: theme.spacing.sm,
+                };
+            case 'medium':
+                return {
+                    paddingHorizontal: theme.spacing.lg,
+                    paddingVertical: theme.spacing.md,
+                };
+            case 'large':
+                return {
+                    paddingHorizontal: theme.spacing.xl,
+                    paddingVertical: theme.spacing.lg,
+                };
+            default:
+                return {
+                    paddingHorizontal: theme.spacing.xl,
+                    paddingVertical: theme.spacing.lg,
+                };
+        }
+    };
+
+    const getTextColor = () => {
+        switch (variant) {
+            case 'primary':
+            case 'danger':
+            case 'success':
+                return '#fff';
+            case 'secondary':
+                return theme.colors.primary;
+            case 'outline':
+                return theme.colors.text;
+            default:
+                return '#fff';
+        }
+    };
+
+    const getTextSize = () => {
+        switch (size) {
+            case 'small':
+                return theme.fontSize.sm;
+            case 'medium':
+                return theme.fontSize.md;
+            case 'large':
+                return theme.fontSize.lg;
+            default:
+                return theme.fontSize.lg;
+        }
+    };
+
     const buttonStyles = [
         styles.button,
-        styles[variant],
-        styles[size],
+        {
+            borderRadius: theme.borderRadius.md,
+            ...getVariantStyle(),
+            ...getSizeStyle(),
+        },
+        variant !== 'outline' && theme.shadows.sm,
         disabled && styles.disabled,
         style,
     ];
 
     const textStyles = [
         styles.text,
-        styles[`${variant}Text`],
-        styles[`${size}Text`],
+        {
+            color: getTextColor(),
+            fontSize: getTextSize(),
+            fontWeight: theme.fontWeight.semibold,
+        },
     ];
 
     return (
@@ -47,82 +146,18 @@ export default function Button({
 
 const styles = StyleSheet.create({
     button: {
-        borderRadius: theme.borderRadius.md,
         justifyContent: 'center',
         alignItems: 'center',
-        ...theme.shadows.sm,
     },
     content: {
         flexDirection: 'row',
         alignItems: 'center',
-        gap: theme.spacing.sm,
+        gap: 8,
     },
-
-    // Variants
-    primary: {
-        backgroundColor: theme.colors.primary,
-    },
-    secondary: {
-        backgroundColor: theme.colors.surface,
-        borderWidth: 2,
-        borderColor: theme.colors.primary,
-    },
-    danger: {
-        backgroundColor: theme.colors.danger,
-    },
-    success: {
-        backgroundColor: theme.colors.success,
-    },
-    outline: {
-        backgroundColor: 'transparent',
-        borderWidth: 2,
-        borderColor: theme.colors.border,
-    },
-
-    // Sizes
-    small: {
-        paddingHorizontal: theme.spacing.md,
-        paddingVertical: theme.spacing.sm,
-    },
-    medium: {
-        paddingHorizontal: theme.spacing.lg,
-        paddingVertical: theme.spacing.md,
-    },
-    large: {
-        paddingHorizontal: theme.spacing.xl,
-        paddingVertical: theme.spacing.lg,
-    },
-
     disabled: {
         opacity: 0.5,
     },
-
-    // Text styles
     text: {
-        fontWeight: theme.fontWeight.semibold,
-    },
-    primaryText: {
-        color: '#fff',
-    },
-    secondaryText: {
-        color: theme.colors.primary,
-    },
-    dangerText: {
-        color: '#fff',
-    },
-    successText: {
-        color: '#fff',
-    },
-    outlineText: {
-        color: theme.colors.text,
-    },
-    smallText: {
-        fontSize: theme.fontSize.sm,
-    },
-    mediumText: {
-        fontSize: theme.fontSize.md,
-    },
-    largeText: {
-        fontSize: theme.fontSize.lg,
+        // Dynamic styles applied inline
     },
 });

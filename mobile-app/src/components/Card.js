@@ -1,10 +1,20 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { theme } from '../styles/theme';
+import { useTheme } from '../context/ThemeContext';
 
 export default function Card({ children, style }) {
+    const { theme } = useTheme();
+
     return (
-        <View style={[styles.card, style]}>
+        <View style={[
+            styles.card,
+            {
+                backgroundColor: theme.colors.surface,
+                borderRadius: theme.borderRadius.lg,
+            },
+            theme.shadows.sm,
+            style
+        ]}>
             {children}
         </View>
     );
@@ -12,9 +22,6 @@ export default function Card({ children, style }) {
 
 const styles = StyleSheet.create({
     card: {
-        backgroundColor: theme.colors.surface,
-        borderRadius: theme.borderRadius.lg,
-        padding: theme.spacing.lg,
-        ...theme.shadows.md,
+        padding: 16,
     },
 });

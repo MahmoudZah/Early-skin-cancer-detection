@@ -36,7 +36,7 @@ The API will be available at `http://localhost:5000`
 ### 1. Install Dependencies
 
 ```bash
-cd c:\Users\hp\Desktop\Early-Skin-Cancer-Detection-Using-AI\mobile-app
+cd C:\Users\Lenovo\Desktop\El Study\SBE Sophomore\MedicalPhysics\Task3\Early-skin-cancer-detection\mobile-app
 npm install
 ```
 

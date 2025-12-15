@@ -1,19 +1,56 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, StatusBar } from 'react-native';
-import { theme } from '../styles/theme';
+import { View, Text, StyleSheet, ScrollView, StatusBar, TouchableOpacity } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useTheme } from '../context/ThemeContext';
 import Button from '../components/Button';
 import Disclaimer from '../components/Disclaimer';
 
 export default function HomeScreen({ navigation }) {
+    const insets = useSafeAreaInsets();
+    const { theme, isDark, toggleTheme, themeMode, setAutoMode } = useTheme();
+
     return (
-        <View style={styles.container}>
-            <StatusBar barStyle="dark-content" backgroundColor={theme.colors.background} />
-            <ScrollView contentContainerStyle={styles.content}>
+        <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
+            <StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} backgroundColor={theme.colors.background} />
+            <ScrollView
+                contentContainerStyle={[
+                    styles.content,
+                    {
+                        paddingTop: insets.top + theme.spacing.lg,
+                        paddingBottom: insets.bottom + theme.spacing.lg,
+                    }
+                ]}
+            >
+                {/* Theme Toggle */}
+                <View style={styles.themeToggle}>
+                    <TouchableOpacity
+                        onPress={toggleTheme}
+                        style={[styles.themeButton, { backgroundColor: theme.colors.surface }]}
+                    >
+                        <Ionicons
+                            name={isDark ? 'sunny' : 'moon'}
+                            size={20}
+                            color={theme.colors.text}
+                        />
+                    </TouchableOpacity>
+                    {themeMode !== 'auto' && (
+                        <TouchableOpacity
+                            onPress={setAutoMode}
+                            style={[styles.autoButton, { backgroundColor: theme.colors.surface }]}
+                        >
+                            <Text style={[styles.autoText, { color: theme.colors.textSecondary }]}>Auto</Text>
+                        </TouchableOpacity>
+                    )}
+                </View>
+
                 {/* Header */}
                 <View style={styles.header}>
-                    <Text style={styles.emoji}>🔬</Text>
-                    <Text style={styles.title}>Skin Cancer Detector</Text>
-                    <Text style={styles.subtitle}>
+                    <View style={styles.iconContainer}>
+                        <Ionicons name="scan-circle" size={72} color={theme.colors.primary} />
+                    </View>
+                    <Text style={[styles.title, { color: theme.colors.text }]}>Skin Cancer Detector</Text>
+                    <Text style={[styles.subtitle, { color: theme.colors.textSecondary }]}>
                         AI-powered early detection assistant
                     </Text>
                 </View>
@@ -25,7 +62,7 @@ export default function HomeScreen({ navigation }) {
                         onPress={() => navigation.navigate('Camera')}
                         variant="primary"
                         size="large"
-                        icon={<Text style={styles.buttonIcon}>📸</Text>}
+                        icon={<Ionicons name="camera" size={20} color="#fff" />}
                     />
 
                     <Button
@@ -33,7 +70,7 @@ export default function HomeScreen({ navigation }) {
                         onPress={() => navigation.navigate('ImagePicker')}
                         variant="secondary"
                         size="large"
-                        icon={<Text style={styles.buttonIcon}>🖼️</Text>}
+                        icon={<Ionicons name="images" size={20} color={theme.colors.primary} />}
                     />
 
                     <Button
@@ -41,7 +78,7 @@ export default function HomeScreen({ navigation }) {
                         onPress={() => navigation.navigate('History')}
                         variant="outline"
                         size="medium"
-                        icon={<Text style={styles.buttonIcon}>📋</Text>}
+                        icon={<Ionicons name="time" size={20} color={theme.colors.text} />}
                     />
 
                     <Button
@@ -49,7 +86,7 @@ export default function HomeScreen({ navigation }) {
                         onPress={() => navigation.navigate('Info')}
                         variant="outline"
                         size="medium"
-                        icon={<Text style={styles.buttonIcon}>ℹ️</Text>}
+                        icon={<Ionicons name="information-circle" size={20} color={theme.colors.text} />}
                     />
                 </View>
 
@@ -57,7 +94,7 @@ export default function HomeScreen({ navigation }) {
                 <Disclaimer />
 
                 {/* Footer */}
-                <Text style={styles.footer}>
+                <Text style={[styles.footer, { color: theme.colors.textSecondary }]}>
                     Early detection saves lives. Regular skin checks are important.
                 </Text>
             </ScrollView>
@@ -68,44 +105,59 @@ export default function HomeScreen({ navigation }) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: theme.colors.background,
     },
     content: {
-        padding: theme.spacing.lg,
+        paddingHorizontal: 24,
+    },
+    themeToggle: {
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+        gap: 8,
+        marginBottom: 8,
+    },
+    themeButton: {
+        width: 40,
+        height: 40,
+        borderRadius: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    autoButton: {
+        paddingHorizontal: 12,
+        paddingVertical: 8,
+        borderRadius: 16,
+    },
+    autoText: {
+        fontSize: 12,
+        fontWeight: '500',
     },
     header: {
         alignItems: 'center',
-        marginTop: theme.spacing.xl,
-        marginBottom: theme.spacing.xxl,
+        marginTop: 16,
+        marginBottom: 48,
     },
-    emoji: {
-        fontSize: 72,
-        marginBottom: theme.spacing.md,
+    iconContainer: {
+        marginBottom: 16,
     },
     title: {
-        fontSize: theme.fontSize.xxl,
-        fontWeight: theme.fontWeight.bold,
-        color: theme.colors.text,
-        marginBottom: theme.spacing.sm,
+        fontSize: 32,
+        fontWeight: '700',
+        marginBottom: 8,
         textAlign: 'center',
     },
     subtitle: {
-        fontSize: theme.fontSize.md,
-        color: theme.colors.textSecondary,
+        fontSize: 16,
         textAlign: 'center',
     },
     actions: {
-        gap: theme.spacing.md,
-        marginBottom: theme.spacing.xl,
-    },
-    buttonIcon: {
-        fontSize: 20,
+        gap: 16,
+        marginBottom: 32,
     },
     footer: {
-        fontSize: theme.fontSize.sm,
-        color: theme.colors.textSecondary,
+        fontSize: 14,
         textAlign: 'center',
-        marginTop: theme.spacing.lg,
+        marginTop: 24,
         fontStyle: 'italic',
     },
 });

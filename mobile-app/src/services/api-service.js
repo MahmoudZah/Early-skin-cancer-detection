@@ -3,7 +3,7 @@ import axios from 'axios';
 // Update this URL with your server's IP address when running on a physical device
 // For emulator: localhost (Android) or 127.0.0.1 (iOS)
 // For physical device: your computer's local IP (e.g., 192.168.1.100)
-const API_BASE_URL = 'http://192.168.1.254:5000';
+const API_BASE_URL = 'http://192.168.2.103:5000';
 class ApiService {
     /**
      * Predict skin lesion type from an image

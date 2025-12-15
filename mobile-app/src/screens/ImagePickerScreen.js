@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, Image, Alert } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-import { theme } from '../styles/theme';
+import { Ionicons } from '@expo/vector-icons';
+import { useTheme } from '../context/ThemeContext';
 import Button from '../components/Button';
 
 export default function ImagePickerScreen({ navigation }) {
+    const { theme } = useTheme();
     const [selectedImage, setSelectedImage] = useState(null);
 
     const pickImage = async () => {
@@ -20,7 +22,8 @@ export default function ImagePickerScreen({ navigation }) {
 
         const result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            allowsEditing: false,
+            allowsEditing: true,  // Enable cropping
+            aspect: [1, 1],       // Square crop
             quality: 0.8,
         });
 
@@ -36,22 +39,25 @@ export default function ImagePickerScreen({ navigation }) {
     };
 
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
             <View style={styles.content}>
-                <Text style={styles.title}>Upload Image</Text>
-                <Text style={styles.subtitle}>
+                <Text style={[styles.title, { color: theme.colors.text }]}>Upload Image</Text>
+                <Text style={[styles.subtitle, { color: theme.colors.textSecondary }]}>
                     Select a clear image of the skin lesion from your gallery
                 </Text>
 
                 {selectedImage ? (
                     <View style={styles.imageContainer}>
                         <Image source={{ uri: selectedImage }} style={styles.image} />
-                        <Text style={styles.imageLabel}>Selected Image</Text>
+                        <Text style={[styles.imageLabel, { color: theme.colors.textSecondary }]}>Selected Image</Text>
                     </View>
                 ) : (
-                    <View style={styles.placeholder}>
-                        <Text style={styles.placeholderIcon}>🖼️</Text>
-                        <Text style={styles.placeholderText}>No image selected</Text>
+                    <View style={[styles.placeholder, { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}>
+                        <Ionicons name="image-outline" size={64} color={theme.colors.textSecondary} />
+                        <Text style={[styles.placeholderText, { color: theme.colors.textSecondary }]}>No image selected</Text>
+                        <Text style={[styles.cropHint, { color: theme.colors.primary }]}>
+                            Tap to select and crop
+                        </Text>
                     </View>
                 )}
 
@@ -87,59 +93,54 @@ export default function ImagePickerScreen({ navigation }) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: theme.colors.background,
     },
     content: {
         flex: 1,
-        padding: theme.spacing.lg,
+        padding: 24,
     },
     title: {
-        fontSize: theme.fontSize.xxl,
-        fontWeight: theme.fontWeight.bold,
-        color: theme.colors.text,
-        marginBottom: theme.spacing.sm,
+        fontSize: 32,
+        fontWeight: '700',
+        marginBottom: 8,
     },
     subtitle: {
-        fontSize: theme.fontSize.md,
-        color: theme.colors.textSecondary,
-        marginBottom: theme.spacing.xl,
+        fontSize: 16,
+        marginBottom: 32,
     },
     imageContainer: {
         flex: 1,
-        marginBottom: theme.spacing.lg,
+        marginBottom: 24,
     },
     image: {
         width: '100%',
         height: '100%',
-        borderRadius: theme.borderRadius.lg,
+        borderRadius: 16,
         resizeMode: 'contain',
     },
     imageLabel: {
         textAlign: 'center',
-        marginTop: theme.spacing.sm,
-        fontSize: theme.fontSize.sm,
-        color: theme.colors.textSecondary,
+        marginTop: 8,
+        fontSize: 14,
     },
     placeholder: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: theme.colors.surface,
-        borderRadius: theme.borderRadius.lg,
+        borderRadius: 16,
         borderWidth: 2,
-        borderColor: theme.colors.border,
         borderStyle: 'dashed',
-        marginBottom: theme.spacing.lg,
-    },
-    placeholderIcon: {
-        fontSize: 64,
-        marginBottom: theme.spacing.md,
+        marginBottom: 24,
     },
     placeholderText: {
-        fontSize: theme.fontSize.md,
-        color: theme.colors.textSecondary,
+        fontSize: 16,
+        marginTop: 16,
+    },
+    cropHint: {
+        fontSize: 14,
+        marginTop: 8,
+        fontWeight: '500',
     },
     actions: {
-        gap: theme.spacing.md,
+        gap: 16,
     },
 });
